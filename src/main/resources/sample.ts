@@ -74,6 +74,37 @@ describe('PopoverAlertService', () => {
     expect(addAlertSpy).toHaveBeenCalledWith(heading, 'danger', message);
   });
 
-  // Add more tests for other methods if needed
+
+  it('should clear all alerts', () => {
+    const componentLoader = jasmine.createSpyObj('ComponentLoader', ['hide']);
+    componentLoaderFactorySpy.createLoader.and.returnValue(componentLoader);
+
+    service.clearAllAlerts();
+
+    expect(componentLoader.hide).toHaveBeenCalled();
+  });
+
+  it('should show an alert', () => {
+    const alertConfig: PopoverAlertConfig = {
+      type: 'success',
+      heading: 'Test Heading',
+      message: ['Test Message 1', 'Test Message 2']
+    };
+    const popoverAlertRef = jasmine.createSpyObj<PopoverAlertRef>('PopoverAlertRef', ['hide']);
+    componentLoaderFactorySpy.createLoader.and.returnValue({
+      show: jasmine.createSpy(),
+      hide: jasmine.createSpy()
+    });
+
+    service.showAlert(alertConfig);
+
+    expect(componentLoaderFactorySpy.createLoader).toHaveBeenCalledWith(
+      null,
+      null,
+      null
+    );
+  });
+
+
 
 });
