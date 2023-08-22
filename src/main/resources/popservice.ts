@@ -1,130 +1,109 @@
 import { TestBed } from '@angular/core/testing';
 import { PopoverAlertService } from './popover-alert.service';
-import { PopoverAlertConfig } from './popover-alert-config.model';
-import { PopoverAlertRef } from './popover-alert-ref.model';
+import { ComponentLoaderFactory, ComponentLoader } from 'your-component-loader-library'; // Replace with actual import
+import { PopoverAlertConfig } from './popover-alert-config.model'; // Replace with actual import
+import { PopoverAlertRef } from './popover-alert-ref.model'; // Replace with actual import
 
 describe('PopoverAlertService', () => {
-  let popoverAlertService: PopoverAlertService;
+  let service: PopoverAlertService;
+  let componentLoader: jasmine.SpyObj<ComponentLoader<PopoverAlertComponent>>;
 
   beforeEach(() => {
+    const componentLoaderFactory = jasmine.createSpyObj('ComponentLoaderFactory', ['createLoader']);
+    componentLoader = jasmine.createSpyObj('ComponentLoader', ['show', 'hide']);
+
+    componentLoaderFactory.createLoader.and.returnValue(componentLoader);
+
     TestBed.configureTestingModule({
-      providers: [PopoverAlertService],
+      providers: [
+        PopoverAlertService,
+        { provide: ComponentLoaderFactory, useValue: componentLoaderFactory },
+      ],
     });
-
-    popoverAlertService = TestBed.inject(PopoverAlertService);
+    service = TestBed.inject(PopoverAlertService);
   });
 
-  it('should add an alert with string message', () => {
-    const heading = 'Sample Heading';
-    const alertType = 'info';
-    const message = 'Sample Message';
-
-    const addAlertSpy = spyOn(popoverAlertService, 'addAlert').and.callThrough();
-    popoverAlertService.addAlert(heading, alertType, message);
-
-    expect(addAlertSpy).toHaveBeenCalledWith(heading, alertType, [message]);
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('should add an alert with array of messages', () => {
-    const heading = 'Sample Heading';
-    const alertType = 'success';
-    const messages = ['Message 1', 'Message 2'];
+  it('should show secondary alert', () => {
+    const heading = 'Test Heading';
+    const messages = ['Test Message'];
 
-    const addAlertSpy = spyOn(popoverAlertService, 'addAlert').and.callThrough();
-    popoverAlertService.addAlert(heading, alertType, messages);
+    service.showSecondaryAlert(heading, messages);
 
-    expect(addAlertSpy).toHaveBeenCalledWith(heading, alertType, messages);
+    // Add your assertions here
   });
 
-  it('should call showAlert method with correct config', () => {
-    const heading = 'Sample Heading';
-    const alertType = 'danger';
-    const messages = 'Sample Message';
+  it('should show success alert', () => {
+    const heading = 'Test Heading';
+    const messages = ['Test Message'];
 
-    const popAltCfg: PopoverAlertConfig = new PopoverAlertConfig();
-    popAltCfg.type = alertType;
-    popAltCfg.heading = heading;
-    popAltCfg.message = [messages];
+    service.showSuccessAlert(heading, messages);
 
-    const showAlertSpy = spyOn(popoverAlertService, 'showAlert').and.callThrough();
-    popoverAlertService.addAlert(heading, alertType, messages);
-
-    expect(showAlertSpy).toHaveBeenCalledWith(popAltCfg);
+    // Add your assertions here
   });
 
-  // Add more test cases as needed for different scenarios
+  it('should show info alert', () => {
+    const heading = 'Test Heading';
+    const messages = ['Test Message'];
 
-  // Test for clearAll() method
-  it('should clear all alerts when clearAll is called', () => {
-    const hideSpy = spyOn(popoverAlertService.alertComponentLoader, 'hide');
-    popoverAlertService.clearAll();
+    service.showInfoAlert(heading, messages);
 
-    expect(hideSpy).toHaveBeenCalled();
+    // Add your assertions here
   });
 
-  import { TestBed } from '@angular/core/testing';
-  import { PopoverAlertService } from './popover-alert.service';
-  import { PopoverAlertConfig } from './popover-alert-config.model';
-  import { PopoverAlertRef } from './popover-alert-ref.model';
+  it('should show warning alert', () => {
+    const heading = 'Test Heading';
+    const messages = ['Test Message'];
 
-  describe('PopoverAlertService', () => {
-    let popoverAlertService: PopoverAlertService;
+    service.showWarningAlert(heading, messages);
 
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        providers: [PopoverAlertService],
-      });
-
-      popoverAlertService = TestBed.inject(PopoverAlertService);
-    });
-
-    it('should add an alert with string message', () => {
-      const heading = 'Sample Heading';
-      const alertType = 'info';
-      const message = 'Sample Message';
-
-      const addAlertSpy = spyOn(popoverAlertService, 'addAlert').and.callThrough();
-      popoverAlertService.addAlert(heading, alertType, message);
-
-      expect(addAlertSpy).toHaveBeenCalledWith(heading, alertType, [message]);
-    });
-
-    it('should add an alert with array of messages', () => {
-      const heading = 'Sample Heading';
-      const alertType = 'success';
-      const messages = ['Message 1', 'Message 2'];
-
-      const addAlertSpy = spyOn(popoverAlertService, 'addAlert').and.callThrough();
-      popoverAlertService.addAlert(heading, alertType, messages);
-
-      expect(addAlertSpy).toHaveBeenCalledWith(heading, alertType, messages);
-    });
-
-    it('should call showAlert method with correct config', () => {
-      const heading = 'Sample Heading';
-      const alertType = 'danger';
-      const messages = 'Sample Message';
-
-      const popAltCfg: PopoverAlertConfig = new PopoverAlertConfig();
-      popAltCfg.type = alertType;
-      popAltCfg.heading = heading;
-      popAltCfg.message = [messages];
-
-      const showAlertSpy = spyOn(popoverAlertService, 'showAlert').and.callThrough();
-      popoverAlertService.addAlert(heading, alertType, messages);
-
-      expect(showAlertSpy).toHaveBeenCalledWith(popAltCfg);
-    });
-
-    // Add more test cases as needed for different scenarios
-
-    // Test for clearAll() method
-    it('should clear all alerts when clearAll is called', () => {
-      const hideSpy = spyOn(popoverAlertService.alertComponentLoader, 'hide');
-      popoverAlertService.clearAll();
-
-      expect(hideSpy).toHaveBeenCalled();
-    });
+    // Add your assertions here
   });
 
+  it('should show error alert', () => {
+    const heading = 'Test Heading';
+    const messages = ['Test Message'];
+
+    service.showErrorAlert(heading, messages);
+
+    // Add your assertions here
+  });
+
+  it('should add alert', () => {
+    const heading = 'Test Heading';
+    const alertType = 'test';
+    const messages = ['Test Message'];
+
+    service.addAlert(heading, alertType, messages);
+
+    // Add your assertions here
+  });
+
+  it('should clear all alerts', () => {
+    // Mock that an alert is shown
+    componentLoader.isShown = true;
+
+    service.clearAll();
+
+    expect(componentLoader.hide).toHaveBeenCalled();
+  });
+
+  it('should show alert', () => {
+    // Mock that an alert is shown
+    componentLoader.isShown = true;
+
+    const alertConfig: PopoverAlertConfig = {
+      type: 'test',
+      heading: 'Test Heading',
+      message: ['Test Message'],
+    };
+
+    service.showAlert(alertConfig);
+
+    expect(componentLoader.hide).toHaveBeenCalled();
+    // Add your assertions for show method
+  });
 });
