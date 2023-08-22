@@ -58,5 +58,27 @@ describe('YourService', () => {
     expect(result).toBe(true);
   });
 
+  it('should set isAddingNewComment to true and focus textarea', () => {
+      const textareaElement = document.createElement('textarea');
+      spyOn(document, 'querySelector').and.returnValue(textareaElement);
+
+      const focusEvent = new FocusEvent('focus');
+      component.getAddingComment(true, focusEvent);
+
+      expect(component.isAddingNewComment).toBe(true);
+      expect(textareaElement.focus).toHaveBeenCalled();
+    });
+
+    it('should set isAddingNewComment to false and call addNewComment', () => {
+      spyOn(component, 'addNewComment');
+
+      const blurEvent = new FocusEvent('blur');
+      component.getAddingComment(false, blurEvent);
+
+      expect(component.isAddingNewComment).toBe(false);
+      expect(component.addNewComment).toHaveBeenCalled();
+    });
+
+
   // Add more test cases as needed
 });
